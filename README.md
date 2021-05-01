@@ -1,7 +1,7 @@
 # CSBible
 C# package for KJV Bible book, chapter, and verse retrieval.
 
-![CSBible](url)
+![CSBible](https://raw.githubusercontent.com/Ferrell-Technology/CSBible/master/CSBiblePNG.png)
 
 ## Class CSBible.Bible
 
