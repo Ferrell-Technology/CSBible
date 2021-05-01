@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
 namespace CSBible
 {
     /// <summary>
@@ -15,7 +14,6 @@ namespace CSBible
         private static List<string> verses = new List<string>();
         private static List<Verse> search = new List<Verse>();
         private static bool init = false;
-        
         /// <summary>
         /// Starts an instance of the Bible class.
         /// </summary>
@@ -27,7 +25,6 @@ namespace CSBible
             }
             init = true;
         }
-
         /// <summary>
         /// Returns a verse based on the specified book, chapter, and verse.
         /// </summary>
@@ -67,10 +64,8 @@ namespace CSBible
             {
                 throw new ChapterOutOfRangeException("The specified chapter is out of range of valid values.");
             }
-
             return null;
         }
-
         /// <summary>
         /// Returns a verse based on the parameters specified in a VerseLocation object.
         /// </summary>
@@ -108,10 +103,8 @@ namespace CSBible
             {
                 throw new ChapterOutOfRangeException("The specified chapter is out of range of valid values.");
             }
-
             return null;
         }
-
         /// <summary>
         /// Returns a string array of verses that compose the chapter in the given book. The resulting string array is not zero-based (index 1 is verse 1, index 2 is verse 2, etc.).
         /// </summary>
@@ -128,7 +121,6 @@ namespace CSBible
             //Abrevation of selected book:
             string abrev = c.ToString();
             verses.Add("");
-
             int chapterLimit = (int)Enum.Parse(typeof(Chaps), book.ToString());
             int verseLimit = Indexes.GetVerseLimit(book, chapter);
             if (chapter <= chapterLimit && verseLimit != 0)
@@ -147,7 +139,6 @@ namespace CSBible
             }
             return verses.ToArray();
         }
-
         /// <summary>
         /// Returns a string array of verses that compose the chapter in the given book.
         /// </summary>
@@ -186,7 +177,6 @@ namespace CSBible
             }
             return verses.ToArray();
         }
-
         /// <summary>
         /// Returns a string array of verses the comprise the specified chapter from a ChapterLocation object.
         /// </summary>
@@ -220,7 +210,6 @@ namespace CSBible
             }
             return verses.ToArray();
         }
-
         /// <summary>
         /// Returns a list of verses that compose the chapter from the given book. The resulting string list is not zero-based (index 1 is verse 1, index 2 is verse 2, etc.).
         /// </summary>
@@ -255,7 +244,6 @@ namespace CSBible
             }
             return verses;
         }
-
         /// <summary>
         /// Returns a list of verses that compose the chapter from the given book.
         /// </summary>
@@ -294,7 +282,6 @@ namespace CSBible
             }
             return verses;
         }
-
         /// <summary>
         /// Returns a string list of verses the comprise the specified chapter from a ChapterLocation object.
         /// </summary>
@@ -328,7 +315,6 @@ namespace CSBible
             }
             return verses;
         }
-
         /// <summary>
         /// Searches the entire Bible for the specified word or phrase and returns a string list of verses that contain it.
         /// </summary>
@@ -346,7 +332,6 @@ namespace CSBible
             }
             return verses;
         }
-
         /// <summary>
         /// Searches in the specified area of the Bible for verses that contain a given word or phrase and returns a string list of verses that contain it.
         /// </summary>
@@ -366,7 +351,6 @@ namespace CSBible
             }
             return verses;
         }
-
         /// <summary>
         /// Searches in the specified book of the Bible for verses that contain a given word or phrase and returns a string list of verses that contain it.
         /// </summary>
@@ -385,7 +369,6 @@ namespace CSBible
             }
             return verses;
         }
-
         /// <summary>
         /// Searches the entire Bible for a given word or phrase, and returns a list of Verse objects containing the book, chapter, and verse that the word or phrase was found in.
         /// </summary>
@@ -403,7 +386,6 @@ namespace CSBible
             }
             return search;
         }
-
         /// <summary>
         /// Searches the specified area of the Bible for a given word or phrase, and returns a list of Verse objects containing the book, chapter, and verse that the word or phrase was found in.
         /// </summary>
@@ -423,7 +405,6 @@ namespace CSBible
             }
             return search;
         }
-
         /// <summary>
         /// Searches in the specified book of the Bible for a given word or phrase, and returns a list of Verse objects containing the book, chapter, and verse that the word or phrase was found in.
         /// </summary>
@@ -442,7 +423,6 @@ namespace CSBible
             }
             return search;
         }
-
         /// <summary>
         /// Filters for Bible searches.
         /// </summary>
@@ -489,7 +469,6 @@ namespace CSBible
                 /// </summary>
                 General_Epistles_and_Revelation
             }
-
         /// <summary>
         /// Closes the current Bible instance.
         /// </summary>
@@ -507,7 +486,6 @@ namespace CSBible
                 throw new Exception("Class instance cannot be closed because it hasn't been opened.");
             }
         }
-
         internal enum Chaps
         {
             Genesis = 50,
@@ -577,7 +555,6 @@ namespace CSBible
             Jude = 1,
             Revelation = 22
         }
-
         internal enum Abrevations
         {
             Gen,
@@ -648,7 +625,6 @@ namespace CSBible
             Rev
         }
     }
-
     /// <summary>
     /// Books of the Bible.
     /// </summary>
@@ -919,7 +895,6 @@ namespace CSBible
         /// </summary>
         Revelation
     }
-
     /// <summary>
     /// Represents the location of a Bible verse.
     /// </summary>
@@ -950,7 +925,6 @@ namespace CSBible
             Verse = verse;
         }
     }
-
     /// <summary>
     /// Represents the location of a Bible verse and the verse itself.
     /// </summary>
@@ -968,14 +942,32 @@ namespace CSBible
         /// Starts a new instance of the Verse class.
         /// </summary>
         /// <param name="location">The location of the verse.</param>
-        /// <param name="text">The text content of the verse.</param>
-        public Verse(VerseLocation location, string text)
+        public Verse(VerseLocation location)
+        {
+            Location = location;
+            Bible b = new Bible();
+            Text = b.GetVerse(location);
+            b.Close();
+        }
+        internal Verse(VerseLocation location, string text)
         {
             Location = location;
             Text = text;
         }
+        /// <summary>
+        /// Starts a new instance of the Verse class.
+        /// </summary>
+        /// <param name="book">The book to get the chapter from.</param>
+        /// <param name="chapter">The chapter to get the verse from.</param>
+        /// <param name="verse">The verse to retrieve.</param>
+        public Verse(Book book, int chapter, int verse)
+        {
+            Location = new VerseLocation(book, chapter, verse);
+            Bible b = new Bible();
+            Text = b.GetVerse(book, chapter, verse);
+            b.Close();
+        }
     }
-
     /// <summary>
     /// Represents the location of a Bible chapter.
     /// </summary>
@@ -1000,7 +992,6 @@ namespace CSBible
             Chapter = chapter;
         }
     }
-
     internal class Indexes
     {
         #region VerseIndexes
@@ -2038,7 +2029,6 @@ namespace CSBible
             {"Rev"}
         };   
     }
-
     /// <summary>
     /// Exception for the event when a specified chapter is out of range.
     /// </summary>
@@ -2050,7 +2040,6 @@ namespace CSBible
         /// <param name="message"></param>
         public ChapterOutOfRangeException(string message) : base(message) { }
     }
-
     /// <summary>
     /// Exception for the event when a specified verse is out of range.
     /// </summary>
