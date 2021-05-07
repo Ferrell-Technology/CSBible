@@ -10,21 +10,10 @@ namespace CSBible
     /// <exception cref="VerseOutOfRangeException"></exception>
     public class Bible
     {
-        private static List<string> lines = new List<string>();
+        private static List<string> lines = Resources.kjvdat.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries).ToList();
         private static List<string> verses = new List<string>();
         private static List<Verse> search = new List<Verse>();
         private static bool init = false;
-        /// <summary>
-        /// Starts an instance of the Bible class.
-        /// </summary>
-        public Bible()
-        {
-            foreach (string line in Resources.kjvdat.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries))
-            {
-                lines.Add(line);
-            }
-            init = true;
-        }
         /// <summary>
         /// Returns a verse based on the specified book, chapter, and verse.
         /// </summary>
@@ -34,36 +23,19 @@ namespace CSBible
         /// <returns></returns>
         /// <exception cref="ChapterOutOfRangeException"></exception>
         /// <exception cref="VerseOutOfRangeException"></exception>
-        public string GetVerse(Book book, int chapter, int verse)
+        public static string GetVerse(Book book, int chapter, int verse)
         {
-            //Index of selected book:
-            int i = (int)book;
-            Abrevations c = (Abrevations)i;
-            //Abrevation of selected book:
-            string abrev = c.ToString();
-            int chapterLimit = (int)Enum.Parse(typeof(Chaps), book.ToString());
+            Abrevations c = (Abrevations)(int)book;
             int verseLimit = Indexes.GetVerseLimit(book, chapter);
-            if (chapter <= chapterLimit && verseLimit != 0)
-            {
+            if (chapter <= (int)Enum.Parse(typeof(Chaps), book.ToString()) && verseLimit != 0)
                 if (verse <= verseLimit && verse > 0)
-                {
                     foreach (string line in lines)
-                    {
-                        if (line.StartsWith(abrev + "|" + chapter.ToString() + "|" + verse.ToString() + "|"))
-                        {
+                        if (line.StartsWith(c.ToString() + "|" + chapter.ToString() + "|" + verse.ToString() + "|"))
                             return line.Split('|')[3].TrimStart(' ').TrimEnd('~');
-                        }
-                    }
-                }
                 else
-                {
                     throw new VerseOutOfRangeException("The specified verse is out of range of valid values.");
-                }
-            }
             else
-            {
                 throw new ChapterOutOfRangeException("The specified chapter is out of range of valid values.");
-            }
             return null;
         }
         /// <summary>
@@ -73,13 +45,11 @@ namespace CSBible
         /// <returns></returns>
         /// <exception cref="ChapterOutOfRangeException"></exception>
         /// <exception cref="VerseOutOfRangeException"></exception>
-        public string GetVerse(VerseLocation location)
+        public static string GetVerse(VerseLocation location)
         {
             //Index of selected book:
             int i = (int)location.Book;
             Abrevations c = (Abrevations)i;
-            //Abrevation of selected book:
-            string abrev = c.ToString();
             int chapterLimit = (int)Enum.Parse(typeof(Chaps), location.Book.ToString());
             int verseLimit = Indexes.GetVerseLimit(location.Book, location.Chapter);
             if (location.Chapter <= chapterLimit && verseLimit != 0)
@@ -88,21 +58,15 @@ namespace CSBible
                 {
                     foreach (string line in lines)
                     {
-                        if (line.StartsWith(abrev + "|" + location.Chapter.ToString() + "|" + location.Verse.ToString() + "|"))
-                        {
+                        if (line.StartsWith(c.ToString() + "|" + location.Chapter.ToString() + "|" + location.Verse.ToString() + "|"))
                             return line.Split('|')[3].TrimStart(' ').TrimEnd('~');
-                        }
                     }
                 }
                 else
-                {
                     throw new VerseOutOfRangeException("The specified verse is out of range of valid values.");
-                }
             }
             else
-            {
                 throw new ChapterOutOfRangeException("The specified chapter is out of range of valid values.");
-            }
             return null;
         }
         /// <summary>
@@ -112,31 +76,21 @@ namespace CSBible
         /// <param name="chapter">The chapter to get the verses from.</param>
         /// <returns></returns>
         /// <exception cref="ChapterOutOfRangeException"></exception>
-        public string[] GetChapter(Book book, int chapter)
+        public static string[] GetChapter(Book book, int chapter)
         {
             verses.Clear();
             //Index of selected book:
             int i = (int)book;
             Abrevations c = (Abrevations)i;
-            //Abrevation of selected book:
-            string abrev = c.ToString();
             verses.Add("");
             int chapterLimit = (int)Enum.Parse(typeof(Chaps), book.ToString());
             int verseLimit = Indexes.GetVerseLimit(book, chapter);
             if (chapter <= chapterLimit && verseLimit != 0)
-            {
                 foreach (string line in lines)
-                {
-                    if (line.StartsWith(abrev + "|" + chapter + "|"))
-                    {
+                    if (line.StartsWith(c.ToString() + "|" + chapter + "|"))
                         verses.Add(line.Split('|')[3].TrimStart(' ').TrimEnd('~'));
-                    }
-                }
-            }
             else
-            {
                 throw new ChapterOutOfRangeException("The specified chapter is out of range of valid values.");
-            }
             return verses.ToArray();
         }
         /// <summary>
@@ -147,34 +101,22 @@ namespace CSBible
         /// <param name="zeroBased">Determines whether the returned string array should be zero-based.</param>
         /// <returns></returns>
         /// <exception cref="ChapterOutOfRangeException"></exception>
-        public string[] GetChapter(Book book, int chapter, bool zeroBased)
+        public static string[] GetChapter(Book book, int chapter, bool zeroBased)
         {
             verses.Clear();
             //Index of selected book:
             int i = (int)book;
             Abrevations c = (Abrevations)i;
-            //Abrevation of selected book:
-            string abrev = c.ToString();
             if (zeroBased == false)
-            {
                 verses.Add("");
-            }
             int chapterLimit = (int)Enum.Parse(typeof(Chaps), book.ToString());
             int verseLimit = Indexes.GetVerseLimit(book, chapter);
             if (chapter <= chapterLimit && verseLimit != 0)
-            {
                 foreach (string line in lines)
-                {
-                    if (line.StartsWith(abrev + "|" + chapter + "|"))
-                    {
+                    if (line.StartsWith(c.ToString() + "|" + chapter + "|"))
                         verses.Add(line.Split('|')[3].TrimStart(' ').TrimEnd('~'));
-                    }
-                }
-            }
             else
-            {
                 throw new ChapterOutOfRangeException("The specified chapter is out of range of valid values.");
-            }
             return verses.ToArray();
         }
         /// <summary>
@@ -183,7 +125,7 @@ namespace CSBible
         /// <param name="location">The ChapterLocation instance for chapter retrieval.</param>
         /// <returns></returns>
         /// <exception cref="ChapterOutOfRangeException"></exception>
-        public string[] GetChapter(ChapterLocation location)
+        public static string[] GetChapter(ChapterLocation location)
         {
             verses.Clear();
             //Index of selected book:
@@ -217,7 +159,7 @@ namespace CSBible
         /// <param name="chapter">The chapter to get the verses from.</param>
         /// <returns></returns>
         /// /// <exception cref="ChapterOutOfRangeException"></exception>
-        public List<string> GetChapterAsList(Book book, int chapter)
+        public static List<string> GetChapterAsList(Book book, int chapter)
         {
             verses.Clear();
             //Index of selected book:
@@ -252,7 +194,7 @@ namespace CSBible
         /// <param name="zeroBased">Determines whether the returned string list should be zero-based.</param>
         /// <returns></returns>
         /// <exception cref="ChapterOutOfRangeException"></exception>
-        public List<string> GetChapterAsList(Book book, int chapter, bool zeroBased)
+        public static List<string> GetChapterAsList(Book book, int chapter, bool zeroBased)
         {
             verses.Clear();
             //Index of selected book:
@@ -288,7 +230,7 @@ namespace CSBible
         /// <param name="location">The ChapterLocation instance for chapter retrieval.</param>
         /// <returns></returns>
         /// <exception cref="ChapterOutOfRangeException"></exception>
-        public List<string> GetChapterAsList(ChapterLocation location)
+        public static List<string> GetChapterAsList(ChapterLocation location)
         {
             verses.Clear();
             //Index of selected book:
@@ -320,7 +262,7 @@ namespace CSBible
         /// </summary>
         /// <param name="query">The word or phrase to search.</param>
         /// <returns></returns>
-        public List<string> Find(string query)
+        public static List<string> Find(string query)
         {
             verses.Clear();
             foreach (string line in lines)
@@ -338,7 +280,7 @@ namespace CSBible
         /// <param name="query">The word or phrase to search.</param>
         /// <param name="filter">The category of the Bible to search in.</param>
         /// <returns></returns>
-        public List<string> Find(string query, Filter filter)
+        public static List<string> Find(string query, Filter filter)
         {
             verses.Clear();
             string[] booksToSearch = Indexes.FilterKeys[filter.ToString()].Split('-');
@@ -357,7 +299,7 @@ namespace CSBible
         /// <param name="query">The word or phrase to search.</param>
         /// <param name="book">The book of the Bible to search in.</param>
         /// <returns></returns>
-        public List<string> Find(string query, Book book)
+        public static List<string> Find(string query, Book book)
         {
             verses.Clear();
             foreach (string line in lines)
@@ -374,7 +316,7 @@ namespace CSBible
         /// </summary>
         /// <param name="query">The string to search.</param>
         /// <returns></returns>
-        public List<Verse> Search(string query)
+        public static List<Verse> Search(string query)
         {
             search.Clear();
             foreach (string line in lines)
@@ -392,7 +334,7 @@ namespace CSBible
         /// <param name="query">The string to search.</param>
         /// <param name="filter">the category of the Bible to search in.</param>
         /// <returns></returns>
-        public List<Verse> Search(string query, Filter filter)
+        public static List<Verse> Search(string query, Filter filter)
         {
             search.Clear();
             string[] booksToSearch = Indexes.FilterKeys[filter.ToString()].Split('-');
@@ -411,7 +353,7 @@ namespace CSBible
         /// <param name="query">The string to search.</param>
         /// <param name="book">The book of the Bible to search in.</param>
         /// <returns></returns>
-        public List<Verse> Search(string query, Book book)
+        public static List<Verse> Search(string query, Book book)
         {
             search.Clear();
             foreach (string line in lines)
@@ -469,23 +411,6 @@ namespace CSBible
                 /// </summary>
                 General_Epistles_and_Revelation
             }
-        /// <summary>
-        /// Closes the current Bible instance.
-        /// </summary>
-        public void Close()
-        {
-            if (init == true)
-            {
-                lines.Clear();
-                verses.Clear();
-                search.Clear();
-                init = false;
-            }
-            else
-            {
-                throw new Exception("Class instance cannot be closed because it hasn't been opened.");
-            }
-        }
         internal enum Chaps
         {
             Genesis = 50,
@@ -926,7 +851,7 @@ namespace CSBible
         }
     }
     /// <summary>
-    /// Represents the location of a Bible verse and the verse itself.
+    /// Represents the location of a Bible verse and the verse text.
     /// </summary>
     public class Verse
     {
@@ -945,9 +870,7 @@ namespace CSBible
         public Verse(VerseLocation location)
         {
             Location = location;
-            Bible b = new Bible();
-            Text = b.GetVerse(location);
-            b.Close();
+            Text = Bible.GetVerse(location);
         }
         internal Verse(VerseLocation location, string text)
         {
@@ -963,9 +886,7 @@ namespace CSBible
         public Verse(Book book, int chapter, int verse)
         {
             Location = new VerseLocation(book, chapter, verse);
-            Bible b = new Bible();
-            Text = b.GetVerse(book, chapter, verse);
-            b.Close();
+            Text = Bible.GetVerse(book, chapter, verse);
         }
     }
     /// <summary>
