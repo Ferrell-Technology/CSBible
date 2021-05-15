@@ -755,6 +755,14 @@ namespace CSBible
             Chapter = chapter;
             Verse = verse;
         }
+        /// <summary>
+        /// Converts this VerseLocation instance to a condensed string (i.e. Matthew 1:5)
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return (Book.ToString() + " " + Chapter + ":" + Verse).Replace('_', ' ');
+        }
     }
     /// <summary>
     /// Represents the location of a Bible verse and the verse text.
@@ -817,6 +825,14 @@ namespace CSBible
         {
             Book = book;
             Chapter = chapter;
+        }
+        /// <summary>
+        /// Converts this ChapterLocation intance to a condensed string. (i.e. John 3)
+        /// </summary>
+        /// <returns></returns>
+        public override string ToString()
+        {
+            return (Book.ToString() + " " + Chapter).Replace('_', ' ');
         }
     }
     internal class Indexes
